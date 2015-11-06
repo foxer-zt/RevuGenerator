@@ -1,0 +1,10 @@
+{
+  "require": {
+    "nikic/php-parser": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "PhpParser\\": ["vendor/nikic/php-parser/lib/PhpParser"]
+    }
+  }
+}
