@@ -12,7 +12,27 @@ class RevuGenerator
      */
     public function __construct()
     {
-        $this->processFile(Settings::FILE_PATH);
+        if (is_file(Settings::FILE_PATH)) {
+            $this->processFile(Settings::FILE_PATH);
+        } else {
+            $iterator = $this->getFiles();
+            foreach ($iterator as $file) {
+                $this->processFile($file->getRealPath());
+            }
+        }
+    }
+
+    /**
+     * Get files by path.
+     *
+     * @return RecursiveIteratorIterator
+     */
+    protected function getFiles()
+    {
+        $directoryIterator = new RecursiveDirectoryIterator(realpath(Settings::FILE_PATH),
+            RecursiveDirectoryIterator::SKIP_DOTS);
+
+        return new RecursiveIteratorIterator($directoryIterator);
     }
 
     /**
@@ -68,6 +88,7 @@ class RevuGenerator
                 }
             }
         }
+
         return '';
     }
 

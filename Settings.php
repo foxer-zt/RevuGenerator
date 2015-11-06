@@ -5,7 +5,7 @@
  */
 class Settings
 {
-    const FILE_PATH = 'path/to/file/with/issues';
+    const FILE_PATH = 'path/to/file/or/folder/with/issues';
 
     const REVU_PATH = 'path/to/revu/xml/file';
 
