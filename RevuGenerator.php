@@ -8,42 +8,11 @@ use PhpParser\Node\FunctionLike;
 class RevuGenerator
 {
     /**
-     * Issue base information. Change it to correspond before running application.
+     * @constructor
      */
-    const SUMMARY = 'Store collection is already loaded.';
-
-    const TAG = 'Performance';
-
-    const PRIORITY = 'Medium';
-
-    const RECOMMENDATION = 'Store collection is already loaded. Please avoid data loading which is already loaded.';
-
-    const CREATED_BY = 'username';
-
-    /**
-     * Path to revu xml file.
-     *
-     * @var string
-     */
-    protected $revuPath;
-
-    /**
-     * Regexp pattern for issue.
-     *
-     * @var string
-     */
-    protected $pattern;
-
-    /**
-     * @param string $filePath
-     * @param string $revuPath
-     * @param string $pattern
-     */
-    public function __construct($filePath, $revuPath, $pattern)
+    public function __construct()
     {
-        $this->revuPath = $revuPath;
-        $this->pattern = $pattern;
-        $this->processFile($filePath);
+        $this->processFile(Settings::FILE_PATH);
     }
 
     /**
@@ -129,11 +98,11 @@ class RevuGenerator
      */
     protected function addIssuesToRevu(array $data)
     {
-        $xml = simplexml_load_file($this->revuPath);
+        $xml = simplexml_load_file(Settings::REVU_PATH);
         /** @var SimpleXMLElement $issues */
         $issues = $xml->issues;
         $this->createIssue($issues, $data);
-        $xml->saveXML($this->revuPath);
+        $xml->saveXML(Settings::REVU_PATH);
     }
 
     /**
@@ -148,21 +117,21 @@ class RevuGenerator
         $time = gmdate('Y-m-d h:m:s O');
         $issue = $parentNode->addChild('issue');
         $issue->addAttribute('filePath', $data['filePath']);
-        $issue->addAttribute('summary', self::SUMMARY);
+        $issue->addAttribute('summary', Settings::SUMMARY);
         $issue->addAttribute('className', $data['className']);
         $issue->addAttribute('methodName', $data['methodName']);
         $issue->addAttribute('lineStart', $data['lineStart']);
         $issue->addAttribute('lineEnd', $data['lineEnd']);
         $issue->addAttribute('hash', '-' . uniqid());
-        $issue->addAttribute('tags', self::TAG);
-        $issue->addAttribute('priority', self::PRIORITY);
+        $issue->addAttribute('tags', Settings::TAG);
+        $issue->addAttribute('priority', Settings::PRIORITY);
         $issue->addAttribute('status', 'to_resolve');
         $history = $issue->addChild('history');
-        $history->addAttribute('createdBy', self::CREATED_BY);
-        $history->addAttribute('lastUpdatedBy', self::CREATED_BY);
+        $history->addAttribute('createdBy', Settings::CREATED_BY);
+        $history->addAttribute('lastUpdatedBy', Settings::CREATED_BY);
         $history->addAttribute('createdOn', $time);
         $history->addAttribute('lastUpdatedOn', $time);
-        $issue->addChild('desc', self::RECOMMENDATION);
+        $issue->addChild('desc', Settings::RECOMMENDATION);
     }
 
     /**
@@ -178,7 +147,7 @@ class RevuGenerator
             $count = 0;
             while (($line = fgets($handle, 4096)) !== false) {
                 $count++;
-                preg_match("@" . $this->pattern . "@", $line, $matches);
+                preg_match("@" . Settings::PATTERN . "@", $line, $matches);
                 if (isset($matches[0])) {
                     $lineNumbers[] = $count;
                 }
