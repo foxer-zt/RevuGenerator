@@ -1,10 +1,4 @@
 <?php
-/**
- * {license_notice}
- *
- * @copyright   {copyright}
- * @license     {license_link}
- */
 if (!file_exists('vendor/autoload.php')) {
     throw new Exception('Run "composer install" in project root directory.');
 }
