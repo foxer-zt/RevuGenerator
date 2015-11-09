@@ -12,14 +12,18 @@ class RevuGenerator
      */
     public function __construct()
     {
+        $occurences = 0;
         if (is_file(Settings::FILE_PATH)) {
-            $this->processFile(Settings::FILE_PATH);
+            $occurences = $this->processFile(Settings::FILE_PATH);
         } else {
             $iterator = $this->getFiles();
             foreach ($iterator as $file) {
-                $this->processFile($file->getRealPath());
+                $occurences += $this->processFile($file->getRealPath());
             }
         }
+
+        $issue = $occurences !== 1 ? 'issues were' : 'issue was';
+        echo "$occurences $issue added to revu.";
     }
 
     /**
@@ -39,7 +43,7 @@ class RevuGenerator
      * Parse file.
      *
      * @param string $path
-     * @return void
+     * @return int
      */
     protected function processFile($path)
     {
@@ -53,9 +57,11 @@ class RevuGenerator
         $occurences = $this->findOccurences($path);
         foreach ($occurences as $line) {
             $data['methodName'] = $this->getIssueParentMethod($statements, $line);
-            $data['lineStart'] = $data['lineEnd'] = $line;
+            $data['lineStart'] = $data['lineEnd'] = $line - 1; //Revu line numbers stratring from 0
             $this->addIssuesToRevu($data);
         }
+
+        return count($occurences);
     }
 
     /**
@@ -143,9 +149,10 @@ class RevuGenerator
         $issue->addAttribute('methodName', $data['methodName']);
         $issue->addAttribute('lineStart', $data['lineStart']);
         $issue->addAttribute('lineEnd', $data['lineEnd']);
-        $issue->addAttribute('hash', '-' . uniqid());
+        $issue->addAttribute('hash', '-' . rand(1000000000, 9999999999));
         $issue->addAttribute('tags', Settings::TAG);
         $issue->addAttribute('priority', Settings::PRIORITY);
+        $issue->addAttribute('issueName', Settings::ISSUE_NAME);
         $issue->addAttribute('status', 'to_resolve');
         $history = $issue->addChild('history');
         $history->addAttribute('createdBy', Settings::CREATED_BY);

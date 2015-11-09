@@ -5,17 +5,19 @@
  */
 class Settings
 {
-    const FILE_PATH = 'path/to/file/or/folder/with/issues';
+    const FILE_PATH = 'C:/wamp/www/magento1.loc/app/code/community/SLI';
 
-    const REVU_PATH = 'path/to/revu/xml/file';
+    const REVU_PATH = 'C:/wamp/www/magento1.loc/sli.xml';
 
-    const PATTERN = 'pattern_for_issue';
+    const PATTERN = 'core/store_collection';
 
     const SUMMARY = 'Store collection is already loaded.';
 
     const TAG = 'Performance';
 
     const PRIORITY = 'Medium';
+
+    const ISSUE_NAME = 'Additional data load.';
 
     const RECOMMENDATION = 'Store collection is already loaded. Please avoid data loading which is already loaded.';
 
